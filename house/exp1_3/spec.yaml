@@ -4,7 +4,6 @@ nodes:
     image: slankdev/frr
     interfaces:
       - { name: net0, type: direct, args: R1#net0 }
-      - { name: net1, type: direct, args: R1#net4 }
   - name: C2
     image: slankdev/frr
     interfaces:
@@ -18,8 +17,7 @@ nodes:
     interfaces:
       - { name: net0, type: direct, args: C1#net0 }
       - { name: net1, type: direct, args: C2#net0 }
-      - { name: net2, type: direct, args: C3#net0 } 
-      - { name: net4, type: direct, args: C1#net1 }     
+      - { name: net2, type: direct, args: C3#net0 }    
 
 
 node_configs:
@@ -27,13 +25,13 @@ node_configs:
   - name: C1
     cmds:
       - cmd: ip addr add 10.0.0.2/24 dev net0
-      - cmd: ip addr add 10.0.0.12/24 dev net1
+      - cmd: ip addr add 10.0.0.12/24 dev net0
       - cmd: ip route replace default via 10.0.0.1
       - cmd: ip rule add prio 100 to 10.1.0.0/24 table 100
       - cmd: ip rule add prio 200 to 10.2.0.0/24 table 200
       - cmd: ip route add 10.0.0.0/24 dev net0 
-      - cmd: ip route add 10.1.0.0/24 via 10.0.0.1 dev net0 table 100
-      - cmd: ip route add 10.2.0.0/24 via 10.0.0.11 dev net1 table 200
+      - cmd: ip route add 10.1.0.0/24 via 10.0.0.1 src 10.0.0.2 dev net0 table 100
+      - cmd: ip route add 10.2.0.0/24 via 10.0.0.1 src 10.0.0.12 dev net0 table 200
   - name: C2
     cmds:
       - cmd: ip addr add 10.1.0.2/24 dev net0
@@ -47,7 +45,4 @@ node_configs:
       - cmd: ip addr add 10.0.0.1/24 dev net0
       - cmd: ip addr add 10.1.0.1/24 dev net1
       - cmd: ip addr add 10.2.0.1/24 dev net2
-      - cmd: ip addr add 10.0.0.11/24 dev net4
-      - cmd: ip rule add prio 100 from 10.1.0.0/24 table 100
-      - cmd: ip rule add prio 200 from 10.2.0.0/24 table 200
       - cmd: sysctl -w net.ipv4.ip_forward=1
