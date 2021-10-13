@@ -28,14 +28,12 @@ node_configs:
     cmds:
       - cmd: ip addr add 10.0.0.2/24 dev net0
       - cmd: ip addr add 10.0.0.12/24 dev net0
-      #- cmd: ip route replace default via 10.0.0.1
-      - cmd: sed '$a 100 t100'  /etc/iproute2/rt_tables
-      - cmd: sed '$a 200 t200'  /etc/iproute2/rt_tables
+      - cmd: ip route replace default via 10.0.0.1
       - cmd: ip rule add prio 100 to 10.1.0.0/24 table 100
       - cmd: ip rule add prio 200 to 10.2.0.0/24 table 200
       - cmd: ip route add 10.0.0.0/24 dev net0 
-      - cmd: ip route add 10.1.0.0/24 dev net0 table 100
-      - cmd: ip route add 10.2.0.0/24 dev net1 table 200
+      - cmd: ip route add 10.1.0.0/24 via 10.0.0.1 dev net0 table 100
+      - cmd: ip route add 10.2.0.0/24 via 10.0.0.11 dev net1 table 200
   - name: C2
     cmds:
       - cmd: ip addr add 10.1.0.2/24 dev net0
