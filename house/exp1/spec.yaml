@@ -67,7 +67,7 @@ node_configs:
       - cmd: ip -6 addr add 2001:12::1/64 dev net0
       - cmd: ip -6 addr add 2001:13::1/64 dev net1
       - cmd: ip addr add 10.0.0.1/24 dev net2
-      #- cmd: ip sr tunsrc set 1::1   
+      - cmd: ip sr tunsrc set 1::1   
       - cmd: ip route add 2::/64 via 2001:12::2
       - cmd: ip route add 3::/64 via 2001:13::2  
       - cmd: ip rule add prio 100 from 10.0.0.2 table 100
