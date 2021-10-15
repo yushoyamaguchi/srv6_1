@@ -101,8 +101,8 @@ node_configs:
       #- cmd: ip rule add prio 200 from 10.0.0.12 table 200
       - cmd: ip -6 rule add prio 100 from 2001:1::2 table 100
       - cmd: ip -6 rule add prio 200 from 2001:1::12 table 200 #IPv6
-      - cmd: ip route add default encap seg6 mode encap segs 2::10,4::10 dev net0 table 100
-      - cmd: ip route add default encap seg6 mode encap segs 3::10,4::10 dev net1 table 200
+      - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,4::10 dev net0 table 100
+      - cmd: ip -6 route add default encap seg6 mode encap segs 3::10,4::10 dev net1 table 200
       #- cmd: ip -6 route add 1::10/128 encap seg6local action End.DX4 nh4 10.0.0.2 dev net2
       - cmd: ip -6 route add 1::10/128 encap seg6local action End.DX6 nh6 2001:1::2 dev net2 #IPv6
       - cmd: ip route add default encap seg6 mode encap segs 2::10,4::10 dev net0
@@ -174,7 +174,7 @@ node_configs:
       #- cmd: ip rule add prio 200 to 10.0.0.12 table 200
       - cmd: ip -6 rule add prio 100 to 2001:1::2 table 100
       - cmd: ip -6 rule add prio 200 to 2001:1::12 table 200 #IPv6
-      - cmd: ip route add default encap seg6 mode encap segs 2::10,1::10 dev net0 table 100
-      - cmd: ip route add default encap seg6 mode encap segs 3::10,1::10 dev net1 table 200
+      - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,1::10 dev net0 table 100
+      - cmd: ip -6 route add default encap seg6 mode encap segs 3::10,1::10 dev net1 table 200
       #- cmd: ip -6 route add 4::10/128 encap seg6local action End.DX4 nh4 10.1.0.2 dev net2  
       - cmd: ip -6 route add 4::10/128 encap seg6local action End.DX6 nh6 2001:2::2 dev net2   #IPv6  
