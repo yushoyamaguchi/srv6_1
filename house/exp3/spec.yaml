@@ -49,11 +49,8 @@ node_configs:
       - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
-      #- cmd: ip addr add 10.0.0.2/24 dev net0
-      #- cmd: ip addr add 10.0.0.12/24 dev net0
       - cmd: ip -6 addr add 2001:1::2/64 dev net0 #IPv6
       - cmd: ip -6 addr add 2001:1::12/64 dev net0 #IPv6     
-      #- cmd: ip route replace default via 10.0.0.1
       - cmd: ip -6 route replace default via 2001:1::1 #IPv6
 
   - name: C2
@@ -71,9 +68,7 @@ node_configs:
       - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
-      #- cmd: ip addr add 10.1.0.2/24 dev net0  
-      - cmd: ip -6 addr add 2001:2::2/64 dev net0 #IPv6
-      #- cmd: ip route replace default via 10.1.0.1    
+      - cmd: ip -6 addr add 2001:2::2/64 dev net0 #IPv6   
       - cmd: ip -6 route replace default via 2001:2::1  #IPv6
 
   - name: R1
@@ -93,17 +88,13 @@ node_configs:
       - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
       - cmd: ip -6 addr add 2001:12::1/64 dev net0
       - cmd: ip -6 addr add 2001:13::1/64 dev net1
-      #- cmd: ip addr add 10.0.0.1/24 dev net2
       - cmd: ip -6 addr add 2001:1::1/64 dev net2 #IPv6
       - cmd: ip route add 2::/64 via 2001:12::2
       - cmd: ip route add 3::/64 via 2001:13::2  
-      #- cmd: ip rule add prio 100 from 10.0.0.2 table 100
-      #- cmd: ip rule add prio 200 from 10.0.0.12 table 200
       - cmd: ip -6 rule add prio 100 from 2001:1::2 table 100
       - cmd: ip -6 rule add prio 200 from 2001:1::12 table 200 #IPv6
       - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,4::10 dev net0 table 100
       - cmd: ip -6 route add default encap seg6 mode encap segs 3::10,4::10 dev net1 table 200
-      #- cmd: ip -6 route add 1::10/128 encap seg6local action End.DX4 nh4 10.0.0.2 dev net2
       - cmd: ip -6 route add 1::10/128 encap seg6local action End.DX6 nh6 2001:1::2 dev net2 #IPv6
       - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,4::10 dev net0
 
@@ -166,15 +157,11 @@ node_configs:
       - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
       - cmd: ip -6 addr add 2001:14::1/64 dev net0
       - cmd: ip -6 addr add 2001:15::1/64 dev net1
-      #- cmd: ip addr add 10.1.0.1/24 dev net2
       - cmd: ip -6 addr add 2001:2::1/64 dev net2 #IPv6
       - cmd: ip route add 2::/64 via 2001:14::2
       - cmd: ip route add 3::/64 via 2001:15::2      
-      #- cmd: ip rule add prio 100 to 10.0.0.2 table 100
-      #- cmd: ip rule add prio 200 to 10.0.0.12 table 200
       - cmd: ip -6 rule add prio 100 to 2001:1::2 table 100
       - cmd: ip -6 rule add prio 200 to 2001:1::12 table 200 #IPv6
       - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,1::10 dev net0 table 100
       - cmd: ip -6 route add default encap seg6 mode encap segs 3::10,1::10 dev net1 table 200
-      #- cmd: ip -6 route add 4::10/128 encap seg6local action End.DX4 nh4 10.1.0.2 dev net2  
       - cmd: ip -6 route add 4::10/128 encap seg6local action End.DX6 nh6 2001:2::2 dev net2   #IPv6  
