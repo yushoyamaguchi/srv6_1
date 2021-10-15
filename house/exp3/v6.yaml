@@ -91,6 +91,7 @@ node_configs:
       - cmd: ip -6 addr add 2001:1::1/64 dev net2 #IPv6
       - cmd: ip route add 2::/64 via 2001:12::2
       - cmd: ip route add 3::/64 via 2001:13::2  
+      - cmd: ip sr tunsrc set 1::1
       - cmd: ip -6 rule add prio 100 from 2001:1::2 table 100
       - cmd: ip -6 rule add prio 200 from 2001:1::12 table 200 #IPv6
       - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,4::10 dev net0 table 100
@@ -117,7 +118,8 @@ node_configs:
       - cmd: ip -6 addr add 2001:14::2/64 dev net1 
       - cmd: ip route add 1::/64 via 2001:12::1
       - cmd: ip route add 4::/64 via 2001:14::1  
-      - cmd: ip -6 route add 2::10/128 encap seg6local action End dev net1  
+      - cmd: ip -6 route add 2::10/128 encap seg6local action End dev net1
+      - cmd: ip -6 route add default encap seg6 mode encap segs 1::10 dev net0  
 
   - name: R3
     cmds:
@@ -138,7 +140,8 @@ node_configs:
       - cmd: ip -6 addr add 2001:15::2/64 dev net1 
       - cmd: ip route add 1::/64 via 2001:13::1
       - cmd: ip route add 4::/64 via 2001:15::1  
-      - cmd: ip -6 route add 3::10/128 encap seg6local action End dev net1    
+      - cmd: ip -6 route add 3::10/128 encap seg6local action End dev net1  
+      - cmd: ip -6 route add default encap seg6 mode encap segs 1::10 dev net0   
 
   - name: R4
     cmds:
@@ -159,9 +162,11 @@ node_configs:
       - cmd: ip -6 addr add 2001:15::1/64 dev net1
       - cmd: ip -6 addr add 2001:2::1/64 dev net2 #IPv6
       - cmd: ip route add 2::/64 via 2001:14::2
-      - cmd: ip route add 3::/64 via 2001:15::2      
+      - cmd: ip route add 3::/64 via 2001:15::2
+      - cmd: ip sr tunsrc set 4::1      
       - cmd: ip -6 rule add prio 100 to 2001:1::2 table 100
       - cmd: ip -6 rule add prio 200 to 2001:1::12 table 200 #IPv6
       - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,1::10 dev net0 table 100
       - cmd: ip -6 route add default encap seg6 mode encap segs 3::10,1::10 dev net1 table 200
-      - cmd: ip -6 route add 4::10/128 encap seg6local action End.DX6 nh6 2001:2::2 dev net2   #IPv6  
+      - cmd: ip -6 route add 4::10/128 encap seg6local action End.DX6 nh6 2001:2::2 dev net2   #IPv6
+      - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,1::10 dev net0  
