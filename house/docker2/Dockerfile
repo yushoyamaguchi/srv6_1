@@ -4,7 +4,7 @@ FROM slankdev/ubuntu:20.04
 # (base=slankdev/ubuntu20:04) basic package install
 
 RUN apt update \
- && apt install -y cmake iproute2 libatm1 \
+ && apt install -y cmake iproute2 libatm1 systemctl \
             libmnl0 libpopt0 libxtables12 logrotate \
             git autoconf automake libtool make libreadline-dev texinfo \
             pkg-config libpam0g-dev libjson-c-dev bison flex \
@@ -23,7 +23,7 @@ RUN apt update \
       -D CMAKE_BUILD_TYPE:String="Release" ..\
  && make\
  && sudo make install\
- && cd ..\
+ && cd ../..\
  && groupadd -r -g 92 frr \
  && groupadd -r -g 85 frrvty \
  && adduser --system --ingroup frr --home /var/run/frr/ \
@@ -54,3 +54,16 @@ RUN apt update \
     --with-pkg-extra-version=-MyOwnFRRVersion\
  && make \
  && make install \
+ && install -m 775 -o frr -g frr -d /var/log/frr \
+ && install -m 775 -o frr -g frrvty -d /etc/frr \
+ && install -m 640 -o frr -g frrvty tools/etc/frr/vtysh.conf /etc/frr/vtysh.conf\
+ && install -m 640 -o frr -g frr tools/etc/frr/frr.conf /etc/frr/frr.conf\
+ && install -m 640 -o frr -g frr tools/etc/frr/daemons.conf /etc/frr/daemons.conf\
+ && install -m 640 -o frr -g frr tools/etc/frr/daemons /etc/frr/daemons\
+ && echo net.ipv4.ip_forward=1 >>/etc/sysctl.conf \
+ && echo net.ipv6.conf.all.forwarding=1 >>/etc/sysctl.conf \
+ && install -m 644 tools/frr.service /etc/systemd/system/frr.service\
+ && sed -i -e 's/=no/=yes/g' /etc/frr/daemons\
+ && systemctl enable frr\
+ #&& systcl -w net.ipv4.conf.all.rp_filter=0\
+ #&& sysctl -w net.ipv4.conf.lo.rp_filter=0\

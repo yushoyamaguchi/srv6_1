@@ -1,0 +1,19 @@
+nodes:
+  - name: R1
+    image: srv6_isis_frr:test
+    interfaces:
+      - { name: net0, type: direct, args: R2#net0 }
+  - name: R2
+    image: srv6_isis_frr:test
+    interfaces:
+      - { name: net0, type: direct, args: R1#net0 }
+
+node_configs:
+- name: R1
+  cmds:
+  - cmd: ip addr add 10.255.1.1/24 dev net0      
+  - cmd: systemctl start frr
+- name: R2
+  cmds:
+  - cmd: ip addr add 10.255.1.2/24 dev net0  
+  - cmd: systemctl start frr
