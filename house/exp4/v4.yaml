@@ -1,0 +1,113 @@
+nodes:
+  - name: R1
+    image: srv6_isis_frr:test
+    #image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, args: R2#net0 }
+
+  - name: R2
+    image: srv6_isis_frr:test
+    #image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, args: R1#net0 }
+      - { name: net1, type: direct, args: R3#net0 }
+  - name: R3
+    image: srv6_isis_frr:test
+    #image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, args: R2#net1 }
+
+
+node_configs:
+- name: R1
+  cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0' 
+      #- cmd: ip -6 addr add 2001:1::1/64 dev net0 
+      - cmd: systemctl start frr
+      - cmd: /usr/lib/frr/frr start
+      - cmd: >-
+          vtysh -c 'conf t'
+          -c 'int lo'
+          -c ' ip address 192.168.10.1/32'
+          -c ' exit'
+          -c 'int net0'
+          -c ' ip addr 192.168.1.1/24 '
+          -c ' ip router isis FOO'
+          -c ' exit'
+          -c ' router isis FOO'
+          -c ' net 47.0023.0000.0000.0001.00'
+          -c ' exit'
+- name: R2
+  cmds:  
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
+      #- cmd: ip  addr add 192.168.1.2/24 dev net0 
+      #- cmd: ip  addr add 192.168.2.2/24 dev net1
+      - cmd: systemctl start frr  
+      - cmd: /usr/lib/frr/frr start   
+      - cmd: >-
+          vtysh -c 'conf t'
+          -c 'int lo'
+          -c ' ip address 192.168.10.2/32'
+          -c ' exit'
+          -c 'int net0'
+          -c ' ip addr 192.168.1.2/24 '
+          -c ' ip router isis FOO'
+          -c ' exit'
+          -c 'int net1'
+          -c ' ip addr 192.168.2.2/24 '
+          -c ' ip router isis FOO'
+          -c ' exit'
+          -c ' router isis FOO'
+          -c ' net 47.0023.0000.0000.0002.00'
+          -c ' exit'
+
+- name: R3
+  cmds:  
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      #- cmd: ip -6 addr add 2001:2::3/64 dev net0
+      - cmd: systemctl start frr    
+      - cmd: /usr/lib/frr/frr start
+      - cmd: >-
+          vtysh -c 'conf t'
+          -c 'int lo'
+          -c ' ip address 192.168.10.3/32'
+          -c ' exit'
+          -c 'int net0'
+          -c ' ip addr 192.168.2.3/24 '
+          -c ' ip router isis FOO'
+          -c ' exit'  
+          -c ' router isis FOO'
+          -c ' net 47.0023.0000.0000.0003.00'
+          -c ' exit'
