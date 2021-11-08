@@ -13,6 +13,12 @@ nodes:
     image: srv6_isis_frr:test
     interfaces:
       - { name: net0, type: direct, args: R2#net1 }
+      - { name: net1, type: direct, args: R4#net0 }
+  - name: R4
+    image: srv6_isis_frr:test
+
+    interfaces:
+      - { name: net0, type: direct, args: R3#net1 }    
 
 
 node_configs:
@@ -90,7 +96,10 @@ node_configs:
       - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
       - cmd: ip -6 addr add 2001:2::3/64 dev net0
+      - cmd: ip -6 addr add 2001:3::3/64 dev net1
       - cmd: systemctl start frr  
       - cmd: /usr/lib/frr/frr start  
       - cmd: >-
@@ -99,10 +108,36 @@ node_configs:
           -c ' ipv6 address 2001:12::3/128'
           -c ' exit'
           -c 'int net0'
-          -c ' ipv6 router isis area0'
+          -c ' ipv6 router isis 0'
           -c ' exit'  
           -c ' router isis 0'
           -c ' net 47.0023.0000.0000.0003.00'
           -c ' exit'
 
-
+- name: R4
+  cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0' 
+      - cmd: ip -6 addr add 2001:3::4/64 dev net0 
+      - cmd: systemctl start frr
+      - cmd: /usr/lib/frr/frr start
+      - cmd: >-
+          vtysh -c 'conf t'
+          -c 'int lo'
+          -c ' ipv6 address 2001:12::4/128'
+          -c ' exit'
+          -c 'int net0'
+          -c ' ipv6 router isis 0'
+          -c ' exit'
+          -c ' router isis 0'
+          -c ' net 47.0023.0000.0000.0004.00'
+          -c ' exit'
