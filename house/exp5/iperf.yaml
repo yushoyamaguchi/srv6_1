@@ -40,4 +40,7 @@ node_configs:
       - cmd: ip addr add 10.0.0.1/24 dev net0
       - cmd: ip addr add 10.1.0.1/24 dev net1
       - cmd: ip addr add 10.2.0.1/24 dev net2
+      #- cmd: tc qdisc add dev net0 parent 1:1 handle 10:0 tbf rate 50mbit burst 50kb limit 500kb
+      #- cmd: tc qdisc add dev net1 parent 1:1 handle 10:0 tbf rate 50mbit burst 50kb limit 500kb
+      #- cmd: tc qdisc add dev net2 parent 1:1 handle 10:0 tbf rate 50mbit burst 50kb limit 500kb
       - cmd: sysctl -w net.ipv4.ip_forward=1
