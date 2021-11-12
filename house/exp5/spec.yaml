@@ -50,7 +50,8 @@ node_configs:
       - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
       - cmd: ip -6 addr add 2001:1::2/64 dev net0 #IPv6   
-      - cmd: ip -6 route replace default via 2001:1::1 #IPv6
+      - cmd: ip -6 route add default via 2001:1::1 #IPv6
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::10,4::10 dev net0
 
   - name: C2
     cmds:
@@ -68,7 +69,8 @@ node_configs:
       - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
       - cmd: ip -6 addr add 2001:2::2/64 dev net0 #IPv6   
-      - cmd: ip -6 route replace default via 2001:2::1  #IPv6
+      - cmd: ip -6 route add default via 2001:2::1  #IPv6
+      - cmd: ip -6 route add 2001:1::0/64 encap seg6 mode encap segs 4::10,2::10 dev net0
 
   - name: R1
     cmds:
