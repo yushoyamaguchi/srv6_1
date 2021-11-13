@@ -1,32 +1,32 @@
 nodes:
   - name: R1
-    image: my_iperf3:test
+    image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R2#net0 }
       - { name: net1, type: direct, args: R3#net0 }
       - { name: net2, type: direct, args: C1#net0 }
   - name: R2
-    image: my_iperf3:test
+    image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R1#net0 }
       - { name: net1, type: direct, args: R4#net0 }
   - name: R3
-    image: my_iperf3:test
+    image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R1#net1 }
       - { name: net1, type: direct, args: R4#net1 }        
   - name: R4
-    image: my_iperf3:test
+    image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R2#net1 }
       - { name: net1, type: direct, args: R3#net1 }
       - { name: net2, type: direct, args: C2#net0 }
   - name: C1
-    image: my_iperf3:test
+    image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R1#net2 }
   - name: C2
-    image: my_iperf3:test
+    image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R4#net2 }
 
@@ -44,16 +44,13 @@ node_configs:
       - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
-      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
-      - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
       - cmd: ip -6 addr add 2001:1::2/64 dev net0 #IPv6  
-      - cmd: ip -6 addr add 2001:1::12/64 dev net0 #IPv6  
       - cmd: ip -6 route add default via 2001:1::1 #IPv6
-      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 1::20,2::10,4::10 dev net0 
-      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 3::10,4::10 dev net0 table 200
+      #- cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 1::20,2::10,4::10 dev net0 
+      #- cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 3::10,4::10 dev net0 table 200
 
   - name: C2
     cmds:
@@ -65,11 +62,9 @@ node_configs:
       - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
-      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
-      - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
       - cmd: ip -6 addr add 2001:2::2/64 dev net0 #IPv6   
       - cmd: ip -6 route add default via 2001:2::1  #IPv6
       - cmd: ip -6 route add 2001:1::0/64 encap seg6 mode encap segs 2::10,1::10 dev net0 
@@ -95,11 +90,15 @@ node_configs:
       - cmd: ip route add 2::/64 via 2001:12::2
       - cmd: ip route add 3::/64 via 2001:13::2  
       - cmd: ip sr tunsrc set 1::1
+      - cmd: ip -6 rule add prio 100 fwmark 100 table 100
+      - cmd: ip -6 rule add prio 200 fwmark 200 table 200
+      - cmd: ip -6 rule add prio 200 from 2001:1::2 table 200
+      - cmd: ip sr tunsrc set 1::1
       - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,4::10 dev net0 table 100
       - cmd: ip -6 route add default encap seg6 mode encap segs 3::10,4::10 dev net1 table 200
       - cmd: ip -6 route add 1::10/128 encap seg6local action End.DX6 nh6 2001:1::2 dev net2 #IPv6
       - cmd: ip -6 route add 1::20/128 encap seg6local action End dev net2 #IPv6
-      - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,4::10 dev net0
+      #- cmd: ip -6 route add default encap seg6 mode encap segs 2::10,4::10 dev net0
 
   - name: R2
     cmds:
