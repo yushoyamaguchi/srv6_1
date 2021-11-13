@@ -90,8 +90,8 @@ node_configs:
       - cmd: ip route add 2::/64 via 2001:12::2
       - cmd: ip route add 3::/64 via 2001:13::2  
       - cmd: ip sr tunsrc set 1::1
-      - cmd: ip -6 rule add prio 100 fwmark 100 table 100
-      - cmd: ip -6 rule add prio 200 fwmark 200 table 200
+      - cmd: ip -6 rule add prio 100 fwmark 1 table 100
+      - cmd: ip -6 rule add prio 200 fwmark 2 table 200
       - cmd: ip -6 rule add prio 200 from 2001:1::2 table 200
       - cmd: ip sr tunsrc set 1::1
       - cmd: ip -6 route add default encap seg6 mode encap segs 2::10,4::10 dev net0 table 100
