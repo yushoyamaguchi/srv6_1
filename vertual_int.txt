@@ -1,0 +1,4 @@
+
+ip link add link net0 n0ping type macvlan
+ip link set n0ping up
+ip -6 addr add 2001:1::101 dev n0ping
