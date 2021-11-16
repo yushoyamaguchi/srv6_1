@@ -87,14 +87,20 @@ node_configs:
       - cmd: ip -6 route add 3::/64 via 2001:12::2 
       - cmd: ip -6 route add 4::/64 via 2001:12::2 
       - cmd: ip sr tunsrc set 1::1
-      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 table 100
-      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,3::20,4::10 dev net0 table 200
-      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 table 130
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,3::20,4::10 dev net0 table 140
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,3::20,4::10 dev net0 table 100
+      #- cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 
       - cmd: ip -6 route add 1::10/128 encap seg6local action End.DX6 nh6 2001:1::2 dev net1 #IPv6
       - cmd: ip route add default via 2001:12::2 
       - cmd: ip link add link net0 n0_ping type macvlan
       - cmd: ip link set n0_ping up
       - cmd: ip -6 addr add 2001:12::101 dev n0_ping
+      #- cmd: ip -6 rule add from 2001:12::101 table 130
+      - cmd: ip -6 rule add from 2001:12::101 table 140
+      - cmd: ip -6 rule add from 2001:1::/64 table 100
+      #130,140は仮想インターフェース用
+      #100はC1からのパケット用
 
   - name: R2
     cmds:
