@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char ping[]="ping -c 2 2001:2::2";
+const char ping[]="ping -c 2 2001:2::2 -I 2001:12::101";
 FILE* fp;
 char  buf[1024];
 
@@ -33,10 +33,12 @@ int main(){
     int count=0;
     for(count=0;count<3;count++){
         std::this_thread::sleep_for(std::chrono::milliseconds(300));
-        system("ip -6 rule add to 2001:2::0/64 table 100");
+        system("ip -6 rule del from 2001:12::101");
+        system("ip -6 rule add from 2001:12::101 table 130");
         show_ping();
         std::this_thread::sleep_for(std::chrono::milliseconds(300));
-        system("ip -6 rule add to 2001:2::0/64 table 200");
+        system("ip -6 rule del from 2001:12::101");
+        system("ip -6 rule add from 2001:12::101 table 140");
         show_ping();
     }
     
