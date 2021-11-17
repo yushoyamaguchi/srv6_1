@@ -16,6 +16,7 @@
 #define PING_NUM 2
 #define RTT_AVE 4
 #define BIG 1024
+#define CHECK_TIMES 10
 
 
 FILE* fp;
@@ -75,7 +76,7 @@ void time_check_route_decide(double route1, double route2){
 int main(){
     int count=0;
     double route1,route2=0;
-    for(count=0;count<3;count++){
+    for(count=0;count<CHECK_TIMES;count++){
         
         system("ip -6 rule del from 2001:12::101");
         system("ip -6 rule add from 2001:12::101 table 130");
