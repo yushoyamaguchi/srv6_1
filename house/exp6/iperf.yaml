@@ -4,6 +4,10 @@ nodes:
     image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R1#net0 }
+  - name: C1_sub
+    image: ip6tables:test
+    interfaces:
+      - { name: net0, type: direct, args: R1#net0 }    
   - name: C2
     image: ip6tables:test
     interfaces:
