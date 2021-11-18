@@ -4,10 +4,10 @@ nodes:
     image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R1#net0 }
-  - name: C1_sub
+  - name: C4
     image: ip6tables:test
     interfaces:
-      - { name: net0, type: direct, args: R1#net0 }    
+      - { name: net0, type: direct, args: R1#net3 }    
   - name: C2
     image: ip6tables:test
     interfaces:
@@ -21,7 +21,15 @@ nodes:
     interfaces:
       - { name: net0, type: direct, args: C1#net0 }
       - { name: net1, type: direct, args: C2#net0 }
-      - { name: net2, type: direct, args: C3#net0 }    
+      - { name: net2, type: direct, args: C3#net0 }
+      - { name: net3, type: direct, args: C4#net0 }  
+
+bridges:
+  - name: Bridge0
+    interfaces:
+      - { name: net0, type: docker, args: R0 }
+      - { name: net0, type: netns, args: NS0 }
+      - { name: eth0, type: phys }      
 
 
 node_configs:
@@ -29,9 +37,11 @@ node_configs:
   - name: C1
     cmds:
       - cmd: ip addr add 10.0.0.2/24 dev net0
-      - cmd: ip addr add 10.0.0.12/24 dev net0
       - cmd: ip route replace default via 10.0.0.1
-
+  - name: C4
+    cmds:
+      - cmd: ip addr add 10.0.0.12/24 dev net0
+      - cmd: ip route replace default via 10.0.0.1  
   - name: C2
     cmds:
       - cmd: ip addr add 10.1.0.2/24 dev net0
@@ -42,13 +52,13 @@ node_configs:
       - cmd: ip route replace default via 10.2.0.1  
   - name: R1
     cmds:
-      - cmd: ip addr add 10.0.0.1/24 dev net0
+      - cmd: ip link add br0 type bridge
+      - cmd: ip link set br0 up  
+      - cmd: ip addr add 10.0.0.1/24 dev br0
       - cmd: ip addr add 10.1.0.1/24 dev net1
       - cmd: ip addr add 10.2.0.1/24 dev net2
-      - cmd: iptables -t mangle -A PREROUTING -d 10.0.0.12/32 -j MARK --set-mark 2
-      - cmd: ip rule add prio 200 fwmark 2 table 200
-      - cmd: iptables-save
-      - cmd: ip route add 10.0.0.12/32 dev net2 table 200
+      - cmd: ip link set net0 master br0
+      - cmd: ip link set net3 master br0
       #- cmd: tc qdisc add dev net0 parent 1:1 handle 10:0 tbf rate 50mbit burst 50kb limit 500kb
       #- cmd: tc qdisc add dev net1 parent 1:1 handle 10:0 tbf rate 50mbit burst 50kb limit 500kb
       #- cmd: tc qdisc add dev net2 parent 1:1 handle 10:0 tbf rate 50mbit burst 50kb limit 500kb
