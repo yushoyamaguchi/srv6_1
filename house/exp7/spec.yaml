@@ -130,7 +130,6 @@ node_configs:
       - cmd: ip -6 addr add 2001:1::1/64 dev br0
       - cmd: ip link set net1 master br0
       - cmd: ip link set net2 master br0
-      #
       - cmd: ip -6 route add 2::/64 via 2001:12::2 
       - cmd: ip -6 route add 3::/64 via 2001:12::2 
       - cmd: ip -6 route add 4::/64 via 2001:12::2 
@@ -233,8 +232,6 @@ node_configs:
       - cmd: ip -6 addr add 2001:2::1/64 dev br0
       - cmd: ip link set net2 master br0
       - cmd: ip link set net3 master br0
-
-      #
       - cmd: ip route add 2::/64 via 2001:14::1
       - cmd: ip route add 3::/64 via 2001:15::1
       - cmd: ip sr tunsrc set 4::1      
