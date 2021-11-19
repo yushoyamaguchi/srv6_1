@@ -4,6 +4,7 @@ nodes:
     interfaces:
       - { name: net0, type: direct, args: R2#net0 }
       - { name: net1, type: direct, args: C1#net0 }
+      - { name: net2, type: direct, args: Dos1#net0 }
   - name: R2
     image: ip6tables:test
     interfaces:
@@ -21,16 +22,20 @@ nodes:
       - { name: net0, type: direct, args: R2#net2 }
       - { name: net1, type: direct, args: R3#net1 }
       - { name: net2, type: direct, args: C2#net0 }
-      - { name: net3, type: direct, args: C102#net0 }
+      - { name: net3, type: direct, args: Dos2#net0 }
   - name: C1
     image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R1#net1 }
+  - name: Dos1
+    image: ip6tables:test
+    interfaces:
+      - { name: net0, type: direct, args: R1#net2 }    
   - name: C2
     image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R4#net2 }
-  - name: C102
+  - name: Dos2
     image: ip6tables:test
     interfaces:
       - { name: net0, type: direct, args: R4#net3 }    
@@ -55,6 +60,22 @@ node_configs:
       - cmd: ip -6 addr add 2001:1::2/64 dev net0 #IPv6   
       - cmd: ip -6 route add default via 2001:1::1 #IPv6
 
+  - name: Dos1
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: ip -6 addr add 2001:1::3/64 dev net0 #IPv6   
+      - cmd: ip -6 route add default via 2001:1::1 #IPv6
+
   - name: C2
     cmds:
       - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
@@ -71,7 +92,7 @@ node_configs:
       - cmd: ip -6 addr add 2001:2::2/64 dev net0 #IPv6   
       - cmd: ip -6 route add default via 2001:2::1  #IPv6
 
-  - name: C102
+  - name: Dos2
     cmds:
       - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
       - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
@@ -103,7 +124,13 @@ node_configs:
       - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
       - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
       - cmd: ip -6 addr add 2001:12::1/64 dev net0
-      - cmd: ip -6 addr add 2001:1::1/64 dev net1 #IPv6
+      #- cmd: ip -6 addr add 2001:1::1/64 dev net1 #IPv6
+      - cmd: ip link add br0 type bridge
+      - cmd: ip link set br0 up
+      - cmd: ip -6 addr add 2001:1::1/64 dev br0
+      - cmd: ip link set net1 master br0
+      - cmd: ip link set net2 master br0
+      #
       - cmd: ip -6 route add 2::/64 via 2001:12::2 
       - cmd: ip -6 route add 3::/64 via 2001:12::2 
       - cmd: ip -6 route add 4::/64 via 2001:12::2 
