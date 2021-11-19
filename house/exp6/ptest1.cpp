@@ -79,11 +79,11 @@ int main(){
     for(count=0;count<CHECK_TIMES;count++){
         
         system("ip -6 rule del from 2001:12::101");
-        system("ip -6 rule add from 2001:12::101 table 130");
+        system("ip -6 rule add from 2001:12::101 table 130 prio 130");
         route1=ping_rtt_return();
         
         system("ip -6 rule del from 2001:12::101");
-        system("ip -6 rule add from 2001:12::101 table 140");
+        system("ip -6 rule add from 2001:12::101 table 140 prio 140");
         route2=ping_rtt_return();
         time_check_route_decide(route1,route2);
 
