@@ -1,42 +1,42 @@
 nodes:
   - name: R1
-    image: ip6tables:test
+    image: iperf3:test
     interfaces:
       - { name: net0, type: direct, args: R2#net0 }
       - { name: net1, type: direct, args: C1#net0 }
       - { name: net2, type: direct, args: Dos1#net0 }
   - name: R2
-    image: ip6tables:test
+    image: iperf3:test
     interfaces:
       - { name: net0, type: direct, args: R1#net0 }
       - { name: net1, type: direct, args: R3#net0 }
       - { name: net2, type: direct, args: R4#net0 }
   - name: R3
-    image: ip6tables:test
+    image: iperf3:test
     interfaces:
       - { name: net0, type: direct, args: R2#net1 }
       - { name: net1, type: direct, args: R4#net1 }        
   - name: R4
-    image: ip6tables:test
+    image: iperf3:test
     interfaces:
       - { name: net0, type: direct, args: R2#net2 }
       - { name: net1, type: direct, args: R3#net1 }
       - { name: net2, type: direct, args: C2#net0 }
       - { name: net3, type: direct, args: Dos2#net0 }
   - name: C1
-    image: ip6tables:test
+    image: iperf3:test
     interfaces:
       - { name: net0, type: direct, args: R1#net1 }
   - name: Dos1
-    image: ip6tables:test
+    image: iperf3:test
     interfaces:
       - { name: net0, type: direct, args: R1#net2 }    
   - name: C2
-    image: ip6tables:test
+    image: iperf3:test
     interfaces:
       - { name: net0, type: direct, args: R4#net2 }
   - name: Dos2
-    image: ip6tables:test
+    image: iperf3:test
     interfaces:
       - { name: net0, type: direct, args: R4#net3 }    
 
@@ -213,7 +213,7 @@ node_configs:
       - cmd: ip -6 route add 2001:2::/64 via 2001:15::2  
       
 
-      
+
   - name: R4
     cmds:
       - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
