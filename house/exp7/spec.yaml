@@ -137,7 +137,7 @@ node_configs:
       - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 table 130
       - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 3::20,4::10 dev net0 table 140
       - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 table 100
-      #- cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 
       - cmd: ip -6 route add 1::10/128 encap seg6local action End.DX6 nh6 2001:1::2 dev net1 #IPv6
       - cmd: ip route add default via 2001:12::2 
       - cmd: ip link add link net0 n0_ping type macvlan
@@ -146,8 +146,9 @@ node_configs:
       #- cmd: ip -6 rule add from 2001:12::101 table 130 prio 130
       - cmd: ip -6 rule add from 2001:12::101 table 140 prio 140
       - cmd: ip -6 rule add from 2001:1::2 table 100 prio 100
-      - cmd: ip -6 rule add to 2001:2::/64 table 100 prio 200 
-      #R1-C2帯域チェック用 優先度低い 帯域チェックは::101使わない
+
+      #- cmd: ip -6 rule add to 2001:2::/64 table 100 prio 200 
+      #R1-C2帯域チェック用(提案手法使用時) 優先度低い 帯域チェックは::101使わない
       #- cmd: ip -6 rule add from 2001:12::1 table 100 prio 200  # R1-C2帯域チェック用 
 
       #130,140は仮想インターフェース用
@@ -181,6 +182,10 @@ node_configs:
       - cmd: ip -6 route add 2::10/128 encap seg6local action End.DX6 nh6 2001:12::1 dev net1
       - cmd: ip -6 route add 2001:1::/64 via 2001:12::1
       - cmd: ip -6 route add 2001:2::/64 via 2001:14::2 
+      #- cmd: tc qdisc replace dev net1 root netem delay 5ms
+      #- cmd: tc qdisc replace dev net2 root netem delay 10ms
+      - cmd: tc qdisc add dev net2 root tbf limit 1Mb buffer 200Kb rate 1Mbps
+      - cmd: ethtool -K net2 tso off gso off
 
   - name: R3
     cmds:
@@ -205,7 +210,8 @@ node_configs:
       - cmd: ip sr tunsrc set 3::3
       - cmd: ip -6 route add 3::20/128 encap seg6local action End dev net1  
       - cmd: ip -6 route add 2001:1::/64 via 2001:13::1  
-      - cmd: ip -6 route add 2001:2::/64 via 2001:15::2   
+      - cmd: ip -6 route add 2001:2::/64 via 2001:15::2  
+      
 
   - name: R4
     cmds:
