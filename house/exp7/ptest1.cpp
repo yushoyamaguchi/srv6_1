@@ -13,7 +13,7 @@
 #include <vector>
 
 #define PING_LINES 5
-#define PING_NUM 2
+#define PING_NUM 5
 #define RTT_AVE 4
 #define BIG 1024
 #define CHECK_TIMES 10
@@ -41,7 +41,7 @@ double ping_rtt_return(){
     std::string ping_str="ping -c ";
     std::string num = std::to_string(PING_NUM);
     ping_str.append(num);
-    ping_str.append(" 2001:2::2 -I 2001:12::101");
+    ping_str.append(" 2001:2::1 -I 2001:12::101");
     char const *ping = ping_str.c_str();
     if ((fp = popen(ping, "r")) != NULL) {
         while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -87,7 +87,7 @@ int main(){
         route2=ping_rtt_return();
         time_check_route_decide(route1,route2);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
     
     return EXIT_SUCCESS;
