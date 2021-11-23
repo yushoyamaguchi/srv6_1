@@ -245,3 +245,5 @@ node_configs:
       - cmd: ip -6 route add default encap seg6 mode encap segs 2::10 dev net0 
       - cmd: ip -6 route add 2001:1::/64 encap seg6 mode encap segs 2::20,1::10 dev net0 
       - cmd: ip -6 route add 4::10/128 encap seg6local action End.DX6 nh6 2001:2::2 dev net2   #IPv6
+      - cmd: tc qdisc add dev net0 root tbf limit 1Mb buffer 200Kb rate 1Mbps
+      - cmd: ethtool -K net0 tso off gso off
