@@ -1,0 +1,271 @@
+nodes:
+  - name: R1
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R2#net0 }
+      - { name: net1, type: direct, args: C1#net0 }
+      - { name: net2, type: direct, args: Dos1#net0 }
+  - name: R2
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R1#net0 }
+      - { name: net1, type: direct, args: R3#net0 }
+      - { name: net2, type: direct, args: R4#net0 }
+      - { name: net3, type: direct, args: Dos3#net0 }
+  - name: R3
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R2#net1 }
+      - { name: net1, type: direct, args: R4#net1 }        
+  - name: R4
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R2#net2 }
+      - { name: net1, type: direct, args: R3#net1 }
+      - { name: net2, type: direct, args: C2#net0 }
+      - { name: net3, type: direct, args: Dos2#net0 }
+  - name: C1
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R1#net1 }
+  - name: Dos1
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R1#net2 }    
+  - name: C2
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R4#net2 }
+  - name: Dos2
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R4#net3 }   
+  - name: Dos3
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R2#net3 }       
+
+
+node_configs:
+
+# ping -I <address>
+  - name: C1
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: ip -6 addr add 2001:1::2/64 dev net0 #IPv6   
+      - cmd: ip -6 route add default via 2001:1::1 #IPv6
+
+  - name: Dos1
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: ip -6 addr add 2001:1::3/64 dev net0 #IPv6   
+      - cmd: ip -6 route add default via 2001:1::1 #IPv6
+
+  - name: C2
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: ip -6 addr add 2001:2::2/64 dev net0 #IPv6   
+      - cmd: ip -6 route add default via 2001:2::1  #IPv6
+
+  - name: Dos2
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: ip -6 addr add 2001:2::3/64 dev net0 #IPv6   
+      - cmd: ip -6 route add default via 2001:2::1  #IPv6      
+
+  - name: Dos3
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: ip -6 addr add 2001:18::2/64 dev net0 #IPv6   
+      - cmd: ip -6 route add default via 2001:18::1  #IPv6        
+
+  - name: R1
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
+      - cmd: ip -6 addr add 2001:12::1/64 dev net0
+      #- cmd: ip -6 addr add 2001:1::1/64 dev net1 #IPv6
+      - cmd: ip link add br0 type bridge
+      - cmd: ip link set br0 up
+      - cmd: ip -6 addr add 2001:1::1/64 dev br0
+      - cmd: ip link set net1 master br0
+      - cmd: ip link set net2 master br0
+      - cmd: ip -6 route add 2::/64 via 2001:12::2 
+      - cmd: ip -6 route add 3::/64 via 2001:12::2 
+      - cmd: ip -6 route add 4::/64 via 2001:12::2 
+      - cmd: ip sr tunsrc set 1::1
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 table 130
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,3::20,4::10 dev net0 table 140
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 table 100
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 
+      - cmd: ip -6 route add 1::10/128 encap seg6local action End.DX6 nh6 2001:1::2 dev net1 #IPv6
+      - cmd: ip route add default via 2001:12::2 
+      - cmd: ip link add link net0 n0_ping type macvlan
+      - cmd: ip link set n0_ping up
+      - cmd: ip -6 addr add 2001:12::101 dev n0_ping
+      #- cmd: ip -6 rule add from 2001:12::101 table 130 prio 130
+      - cmd: ip -6 rule add from 2001:12::101 table 140 prio 140
+      - cmd: ip -6 rule add from 2001:1::2 table 100 prio 100
+
+      #- cmd: ip -6 rule add to 2001:2::/64 table 100 prio 200 
+      #R1-C2帯域チェック用(提案手法使用時) 優先度低い 帯域チェックは::101使わない
+      #- cmd: ip -6 rule add from 2001:12::1 table 100 prio 200  # R1-C2帯域チェック用 
+
+      #130,140は仮想インターフェース用
+      #100はC1からのパケット用
+
+  - name: R2
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net2.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net2.rp_filter=0'
+      - cmd: ip -6 addr add 2001:12::2/64 dev net0
+      - cmd: ip -6 addr add 2001:13::1/64 dev net1 
+      - cmd: ip -6 addr add 2001:14::1/64 dev net2 
+      - cmd: ip -6 addr add 2001:18::1/64 dev net3 
+      - cmd: ip route add 1::/64 via 2001:12::1
+      - cmd: ip route add 4::/64 via 2001:14::2  
+      - cmd: ip route add 3::/64 via 2001:13::2 
+      - cmd: ip sr tunsrc set 2::2 
+      - cmd: ip -6 route add 2::20/128 encap seg6local action End dev net1
+      - cmd: ip -6 route add 2::10/128 encap seg6local action End.DX6 nh6 2001:12::1 dev net1
+      - cmd: ip -6 route add 2001:1::/64 via 2001:12::1
+      - cmd: ip -6 route add 2001:2::/64 via 2001:14::2 
+      #- cmd: tc qdisc replace dev net1 root netem delay 5ms
+      #- cmd: tc qdisc replace dev net2 root netem delay 10ms
+      - cmd: tc qdisc add dev net2 root tbf limit 1Mb buffer 200Kb rate 1Mbps
+      - cmd: ethtool -K net2 tso off gso off
+
+  - name: R3
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
+      - cmd: ip -6 addr add 2001:13::2/64 dev net0
+      - cmd: ip -6 addr add 2001:15::1/64 dev net1 
+      - cmd: ip route add 1::/64 via 2001:13::1
+      - cmd: ip route add 2::/64 via 2001:13::1
+      - cmd: ip route add 4::/64 via 2001:15::2 
+      - cmd: ip sr tunsrc set 3::3
+      - cmd: ip -6 route add 3::20/128 encap seg6local action End dev net1  
+      - cmd: ip -6 route add 2001:1::/64 via 2001:13::1  
+      - cmd: ip -6 route add 2001:2::/64 via 2001:15::2  
+      
+
+
+  - name: R4
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net2.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net2.rp_filter=0'
+      - cmd: ip -6 addr add 2001:14::2/64 dev net0
+      - cmd: ip -6 addr add 2001:15::2/64 dev net1
+      #- cmd: ip -6 addr add 2001:2::1/64 dev net2 #IPv6
+      - cmd: ip link add br0 type bridge
+      - cmd: ip link set br0 up
+      - cmd: ip -6 addr add 2001:2::1/64 dev br0
+      - cmd: ip link set net2 master br0
+      - cmd: ip link set net3 master br0
+      - cmd: ip route add 2::/64 via 2001:14::1
+      - cmd: ip route add 3::/64 via 2001:15::1
+      - cmd: ip sr tunsrc set 4::1      
+      - cmd: ip -6 route add default via 2001:14::1
+      - cmd: ip -6 route add 2001:1::/64 encap seg6 mode encap segs 2::20,1::10 dev net0 
+      - cmd: ip -6 route add 4::10/128 encap seg6local action End.DX6 nh6 2001:2::2 dev net2   #IPv6
+      - cmd: tc qdisc add dev net0 root tbf limit 1Mb buffer 200Kb rate 1Mbps
+      - cmd: ethtool -K net0 tso off gso off
