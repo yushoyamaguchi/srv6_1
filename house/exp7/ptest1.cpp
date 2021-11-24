@@ -68,7 +68,7 @@ void time_check_route_decide(double route1, double route2){
         }
         else{
             system("ip -6 route del 2001:2::0/64 table 100");
-            system("ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 3::20,4::10 dev net0 table 100");
+            system("ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,3::20,4::10 dev net0 table 100");
             printf("route2\n");
     }
 }

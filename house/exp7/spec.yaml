@@ -11,6 +11,7 @@ nodes:
       - { name: net0, type: direct, args: R1#net0 }
       - { name: net1, type: direct, args: R3#net0 }
       - { name: net2, type: direct, args: R4#net0 }
+      - { name: net3, type: direct, args: Dos3#net0 }
   - name: R3
     image: iperf3:test
     interfaces:
@@ -38,7 +39,11 @@ nodes:
   - name: Dos2
     image: iperf3:test
     interfaces:
-      - { name: net0, type: direct, args: R4#net3 }    
+      - { name: net0, type: direct, args: R4#net3 }   
+  - name: Dos3
+    image: iperf3:test
+    interfaces:
+      - { name: net0, type: direct, args: R2#net3 }       
 
 
 node_configs:
@@ -108,6 +113,22 @@ node_configs:
       - cmd: ip -6 addr add 2001:2::3/64 dev net0 #IPv6   
       - cmd: ip -6 route add default via 2001:2::1  #IPv6      
 
+  - name: Dos3
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.forwarding=1'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.lo.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv4.conf.all.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.lo.rp_filter=0'
+      - cmd: sysctl -w 'net.ipv4.conf.net0.rp_filter=0'
+      - cmd: ip -6 addr add 2001:18::2/64 dev net0 #IPv6   
+      - cmd: ip -6 route add default via 2001:18::1  #IPv6        
+
   - name: R1
     cmds:
       - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
@@ -135,7 +156,7 @@ node_configs:
       - cmd: ip -6 route add 4::/64 via 2001:12::2 
       - cmd: ip sr tunsrc set 1::1
       - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 table 130
-      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 3::20,4::10 dev net0 table 140
+      - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,3::20,4::10 dev net0 table 140
       - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 table 100
       - cmd: ip -6 route add 2001:2::0/64 encap seg6 mode encap segs 2::20,4::10 dev net0 
       - cmd: ip -6 route add 1::10/128 encap seg6local action End.DX6 nh6 2001:1::2 dev net1 #IPv6
@@ -174,6 +195,7 @@ node_configs:
       - cmd: ip -6 addr add 2001:12::2/64 dev net0
       - cmd: ip -6 addr add 2001:13::1/64 dev net1 
       - cmd: ip -6 addr add 2001:14::1/64 dev net2 
+      - cmd: ip -6 addr add 2001:18::1/64 dev net3 
       - cmd: ip route add 1::/64 via 2001:12::1
       - cmd: ip route add 4::/64 via 2001:14::2  
       - cmd: ip route add 3::/64 via 2001:13::2 
@@ -242,7 +264,7 @@ node_configs:
       - cmd: ip route add 2::/64 via 2001:14::1
       - cmd: ip route add 3::/64 via 2001:15::1
       - cmd: ip sr tunsrc set 4::1      
-      - cmd: ip -6 route add default encap seg6 mode encap segs 2::10 dev net0 
+      - cmd: ip -6 route add default via 2001:14::1
       - cmd: ip -6 route add 2001:1::/64 encap seg6 mode encap segs 2::20,1::10 dev net0 
       - cmd: ip -6 route add 4::10/128 encap seg6local action End.DX6 nh6 2001:2::2 dev net2   #IPv6
       - cmd: tc qdisc add dev net0 root tbf limit 1Mb buffer 200Kb rate 1Mbps
