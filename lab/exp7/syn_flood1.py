@@ -9,7 +9,7 @@ def synFlood(src,tgt):
 
 
 src="2001:18::2"
-tgt="2001:1::3"
+tgt="2001:2::3"
 
-for i in range(10):
+for i in range(100):
  synFlood(src,tgt)
