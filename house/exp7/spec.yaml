@@ -164,11 +164,12 @@ node_configs:
       - cmd: ip link add link net0 n0_ping type macvlan
       - cmd: ip link set n0_ping up
       - cmd: ip -6 addr add 2001:12::101 dev n0_ping
-      #- cmd: ip -6 rule add from 2001:12::101 table 130 prio 130
-      - cmd: ip -6 rule add from 2001:12::101 table 140 prio 140
+      - cmd: ip -6 rule add from 2001:12::101 table 130 prio 130
+      #- cmd: ip -6 rule add from 2001:12::101 table 140 prio 140
       - cmd: ip -6 rule add from 2001:1::2 table 100 prio 100
 
-      #- cmd: ip -6 rule add to 2001:2::/64 table 100 prio 200 
+      - cmd: ip -6 rule add to 2001:2::1 table 100 prio 200 
+      - cmd: ip -6 rule add to 2001:2::2 table 100 prio 200 
       #R1-C2帯域チェック用(提案手法使用時) 優先度低い 帯域チェックは::101使わない
       #- cmd: ip -6 rule add from 2001:12::1 table 100 prio 200  # R1-C2帯域チェック用 
 
@@ -205,7 +206,7 @@ node_configs:
       - cmd: ip -6 route add 2001:1::/64 via 2001:12::1
       - cmd: ip -6 route add 2001:2::/64 via 2001:14::2 
       #- cmd: tc qdisc replace dev net1 root netem delay 5ms
-      #- cmd: tc qdisc replace dev net2 root netem delay 10ms
+      - cmd: tc qdisc replace dev net2 root netem delay 10ms
       - cmd: tc qdisc add dev net2 root tbf limit 1Mb buffer 200Kb rate 1Mbps
       - cmd: ethtool -K net2 tso off gso off
 
