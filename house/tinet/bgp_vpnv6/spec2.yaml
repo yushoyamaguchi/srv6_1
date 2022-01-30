@@ -192,6 +192,7 @@ node_configs:
   - cmd: ip addr add 2001:bb11::1/64 dev net1
   - cmd: /usr/lib/frr/frrinit.sh start
 
+
 - name: R2
   cmds:
   - cmd: sysctl -w 'net.ipv6.conf.all.forwarding=1'
