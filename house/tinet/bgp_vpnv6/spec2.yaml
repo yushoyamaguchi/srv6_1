@@ -45,7 +45,7 @@ postinit:
         locator default
        !
       !
-      router bgp 1 vrf vrf100
+      router bgp 1 
        bgp router-id 1.1.1.1
        no bgp ebgp-requires-policy
        no bgp default ipv4-unicast
@@ -91,7 +91,7 @@ postinit:
         locator default
        !
       !
-      router bgp 2 vrf vrf100
+      router bgp 2 
        bgp router-id 2.2.2.2
        no bgp ebgp-requires-policy
        no bgp default ipv4-unicast
@@ -186,9 +186,9 @@ node_configs:
   - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
 
   - cmd: ip addr add 2001:ffff::1/64 dev net0
-  - cmd: ip link add vrf100 type vrf table 100
-  - cmd: ip link set vrf100 up
-  - cmd: ip link set dev net1 vrf vrf100
+  #- cmd: ip link add vrf100 type vrf table 100
+  #- cmd: ip link set vrf100 up
+  #- cmd: ip link set dev net1 vrf vrf100
   - cmd: ip addr add 2001:bb11::1/64 dev net1
   - cmd: /usr/lib/frr/frrinit.sh start
 
@@ -210,9 +210,9 @@ node_configs:
   - cmd: sysctl -w 'net.ipv4.conf.net1.rp_filter=0'
 
   - cmd: ip addr add 2001:ffff::2/64 dev net0
-  - cmd: ip link add vrf100 type vrf table 100
-  - cmd: ip link set vrf100 up
-  - cmd: ip link set dev net1 vrf vrf100
+  #- cmd: ip link add vrf100 type vrf table 100
+  #- cmd: ip link set vrf100 up
+  #- cmd: ip link set dev net1 vrf vrf100
   - cmd: ip addr add 2001:bb22::1/64 dev net1
   - cmd: /usr/lib/frr/frrinit.sh start
 
